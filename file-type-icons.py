@@ -2,12 +2,12 @@
 Nemo extension: Sets custom-icon for Google Workspace, PDF, and video files.
 
 Works for:
-  - rclone mount (files have extensions like .docx/.xlsx)
+  - rclone mounts (files have extensions like .docx, .xlsx, .pptx but are 0 bytes)
   - GVFS Google Drive mount (native Google files without extension, identified by MIME type)
+  - Local files with matching extensions or MIME types
 
-Installation:
-  bash install.sh
-  nemo -q && nemo &
+Icons are read from: ~/.local/share/nemo-file-type-icons/icons/
+Install with: bash install.sh
 """
 
 import os
@@ -45,18 +45,19 @@ MIME_MAP = {
     "application/vnd.google-apps.spreadsheet":  f"file://{ICON_DIR}/sheets_datei_symbol.png",
     "application/vnd.google-apps.presentation": f"file://{ICON_DIR}/slides_datei_symbol.png",
     "application/pdf":                           f"file://{ICON_DIR}/pdf_datei_symbol_1.png",
-    "video/mp4":          f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/x-matroska":   f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/x-msvideo":    f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/quicktime":    f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/x-ms-wmv":     f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/x-flv":        f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/webm":         f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/mpeg":         f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/x-m4v":        f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/3gpp":         f"file://{ICON_DIR}/video_datei_symbol.png",
-    "video/mp2t":         f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/mp4":        f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-matroska": f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-msvideo":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/quicktime":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-ms-wmv":   f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-flv":      f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/webm":       f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/mpeg":       f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-m4v":      f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/3gpp":       f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/mp2t":       f"file://{ICON_DIR}/video_datei_symbol.png",
 }
+
 
 class FileTypeIconProvider(GObject.GObject, Nemo.InfoProvider):
 
@@ -67,12 +68,15 @@ class FileTypeIconProvider(GObject.GObject, Nemo.InfoProvider):
         mime = file.get_mime_type()
         if mime:
             icon_uri = MIME_MAP.get(mime)
+            # Catch all video/* MIME types not explicitly listed
+            if not icon_uri and mime.startswith("video/"):
+                icon_uri = f"file://{ICON_DIR}/video_datei_symbol.png"
 
-        # 2. Check file extension as fallback (rclone mount)
+        # 2. Check file extension as fallback (rclone mount and local files)
         if not icon_uri:
             name = file.get_name()
             display = file.get_string_attribute("standard::display-name")
-            if display and '.' in display:
+            if display and "." in display:
                 name = display
             ext = os.path.splitext(name.lower())[1]
             icon_uri = EXT_MAP.get(ext)
@@ -80,7 +84,7 @@ class FileTypeIconProvider(GObject.GObject, Nemo.InfoProvider):
         if not icon_uri:
             return Nemo.OperationResult.COMPLETE
 
-        # Already set correctly? → do nothing (performance)
+        # Already set correctly → nothing to do (performance)
         if file.get_string_attribute("metadata::custom-icon") == icon_uri:
             return Nemo.OperationResult.COMPLETE
 
