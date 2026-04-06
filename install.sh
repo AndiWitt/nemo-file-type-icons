@@ -1,10 +1,16 @@
 #!/bin/bash
 set -e
 
-DEST="$HOME/.local/share/nemo-python/extensions/"
+EXT_DEST="$HOME/.local/share/nemo-python/extensions/"
+ICON_DEST="$HOME/.local/share/nemo-file-type-icons/icons/"
 
-mkdir -p "$DEST"
-cp file-type-icons.py "$DEST"
+mkdir -p "$EXT_DEST"
+mkdir -p "$ICON_DEST"
 
-echo "Extension installed to $DEST"
-echo "Now restart Nemo: nemo -q && nemo &"
+cp file-type-icons.py "$EXT_DEST"
+cp icons/*.png "$ICON_DEST"
+
+echo "Extension installed to $EXT_DEST"
+echo "Icons installed to $ICON_DEST"
+echo ""
+echo "Restart Nemo to activate: nemo -q && nemo &"

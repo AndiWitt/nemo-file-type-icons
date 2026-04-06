@@ -6,58 +6,56 @@ Works for:
   - GVFS Google Drive mount (native Google files without extension, identified by MIME type)
 
 Installation:
-  cp file-type-icons.py ~/.local/share/nemo-python/extensions/
+  bash install.sh
   nemo -q && nemo &
-
-Icon directory: adjust ICON_DIR below if your Pictures folder has a different name.
 """
 
 import os
 from gi.repository import GObject, Gio, Nemo
 
-ICON_DIR = os.path.expanduser("~/Bilder/Icons")  # Change to ~/Pictures/Icons if needed
+ICON_DIR = os.path.expanduser("~/.local/share/nemo-file-type-icons/icons")
 
 # Extension mapping (for rclone mount and local files)
 EXT_MAP = {
-    ".docx": f"file://{ICON_DIR}/google-docs.png",
-    ".doc":  f"file://{ICON_DIR}/google-docs.png",
-    ".xlsx": f"file://{ICON_DIR}/google-sheets.png",
-    ".xls":  f"file://{ICON_DIR}/google-sheets.png",
-    ".pptx": f"file://{ICON_DIR}/google-slides.png",
-    ".ppt":  f"file://{ICON_DIR}/google-slides.png",
-    ".pdf":  f"file://{ICON_DIR}/pdf-icon.png",
-    ".mp4":  f"file://{ICON_DIR}/video_datei_logo.png",
-    ".mkv":  f"file://{ICON_DIR}/video_datei_logo.png",
-    ".avi":  f"file://{ICON_DIR}/video_datei_logo.png",
-    ".mov":  f"file://{ICON_DIR}/video_datei_logo.png",
-    ".wmv":  f"file://{ICON_DIR}/video_datei_logo.png",
-    ".flv":  f"file://{ICON_DIR}/video_datei_logo.png",
-    ".webm": f"file://{ICON_DIR}/video_datei_logo.png",
-    ".mpeg": f"file://{ICON_DIR}/video_datei_logo.png",
-    ".mpg":  f"file://{ICON_DIR}/video_datei_logo.png",
-    ".m4v":  f"file://{ICON_DIR}/video_datei_logo.png",
-    ".3gp":  f"file://{ICON_DIR}/video_datei_logo.png",
-    ".ts":   f"file://{ICON_DIR}/video_datei_logo.png",
-    ".mts":  f"file://{ICON_DIR}/video_datei_logo.png",
+    ".docx": f"file://{ICON_DIR}/docs_datei_symbol.png",
+    ".doc":  f"file://{ICON_DIR}/docs_datei_symbol.png",
+    ".xlsx": f"file://{ICON_DIR}/sheets_datei_symbol.png",
+    ".xls":  f"file://{ICON_DIR}/sheets_datei_symbol.png",
+    ".pptx": f"file://{ICON_DIR}/slides_datei_symbol.png",
+    ".ppt":  f"file://{ICON_DIR}/slides_datei_symbol.png",
+    ".pdf":  f"file://{ICON_DIR}/pdf_datei_symbol_1.png",
+    ".mp4":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".mkv":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".avi":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".mov":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".wmv":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".flv":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".webm": f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".mpeg": f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".mpg":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".m4v":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".3gp":  f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".ts":   f"file://{ICON_DIR}/video_datei_symbol.png",
+    ".mts":  f"file://{ICON_DIR}/video_datei_symbol.png",
 }
 
 # MIME type mapping (for GVFS Google Drive mount and system-wide)
 MIME_MAP = {
-    "application/vnd.google-apps.document":     f"file://{ICON_DIR}/google-docs.png",
-    "application/vnd.google-apps.spreadsheet":  f"file://{ICON_DIR}/google-sheets.png",
-    "application/vnd.google-apps.presentation": f"file://{ICON_DIR}/google-slides.png",
-    "application/pdf":                           f"file://{ICON_DIR}/pdf-icon.png",
-    "video/mp4":          f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/x-matroska":   f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/x-msvideo":    f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/quicktime":    f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/x-ms-wmv":     f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/x-flv":        f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/webm":         f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/mpeg":         f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/x-m4v":        f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/3gpp":         f"file://{ICON_DIR}/video_datei_logo.png",
-    "video/mp2t":         f"file://{ICON_DIR}/video_datei_logo.png",
+    "application/vnd.google-apps.document":     f"file://{ICON_DIR}/docs_datei_symbol.png",
+    "application/vnd.google-apps.spreadsheet":  f"file://{ICON_DIR}/sheets_datei_symbol.png",
+    "application/vnd.google-apps.presentation": f"file://{ICON_DIR}/slides_datei_symbol.png",
+    "application/pdf":                           f"file://{ICON_DIR}/pdf_datei_symbol_1.png",
+    "video/mp4":          f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-matroska":   f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-msvideo":    f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/quicktime":    f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-ms-wmv":     f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-flv":        f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/webm":         f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/mpeg":         f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/x-m4v":        f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/3gpp":         f"file://{ICON_DIR}/video_datei_symbol.png",
+    "video/mp2t":         f"file://{ICON_DIR}/video_datei_symbol.png",
 }
 
 class FileTypeIconProvider(GObject.GObject, Nemo.InfoProvider):

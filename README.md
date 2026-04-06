@@ -22,42 +22,45 @@ The extension runs automatically when Nemo opens any folder. It works **system-w
 
 ## Installation
 
-### 1. Provide icon files
-
-Place PNG icon files in `~/Bilder/Icons/` (or `~/Pictures/Icons/` — adjust `ICON_DIR` in the script).
-
-| Filename | Used for |
-|----------|----------|
-| `google-docs.png` | .doc, .docx, Google Docs |
-| `google-sheets.png` | .xls, .xlsx, Google Sheets |
-| `google-slides.png` | .ppt, .pptx, Google Slides |
-| `pdf-icon.png` | .pdf |
-| `video_datei_logo.png` | All video formats |
-
-Recommended size: 96×96 px or larger, sRGB PNG.
-
-### 2. Install the extension
-
 ```bash
+git clone https://github.com/AndiWitt/nemo-file-type-icons.git
+cd nemo-file-type-icons
 bash install.sh
 ```
 
-Or manually:
+This copies:
+- `file-type-icons.py` → `~/.local/share/nemo-python/extensions/`
+- `icons/*.png` → `~/.local/share/nemo-file-type-icons/icons/`
 
-```bash
-mkdir -p ~/.local/share/nemo-python/extensions/
-cp file-type-icons.py ~/.local/share/nemo-python/extensions/
-```
-
-### 3. Restart Nemo
+Then restart Nemo:
 
 ```bash
 nemo -q && nemo &
 ```
 
+## Included icons
+
+| File | Used for |
+|------|----------|
+| `icons/docs_datei_symbol.png` | .doc, .docx, Google Docs |
+| `icons/sheets_datei_symbol.png` | .xls, .xlsx, Google Sheets |
+| `icons/slides_datei_symbol.png` | .ppt, .pptx, Google Slides |
+| `icons/pdf_datei_symbol_1.png` | .pdf |
+| `icons/video_datei_symbol.png` | All video formats |
+
+## Supported file types
+
+| Type | Extensions / MIME type |
+|------|------------------------|
+| Google Docs | `.doc`, `.docx` / `application/vnd.google-apps.document` |
+| Google Sheets | `.xls`, `.xlsx` / `application/vnd.google-apps.spreadsheet` |
+| Google Slides | `.ppt`, `.pptx` / `application/vnd.google-apps.presentation` |
+| PDF | `.pdf` / `application/pdf` |
+| Video | `.mp4`, `.mkv`, `.avi`, `.mov`, `.wmv`, `.flv`, `.webm`, `.mpeg`, `.mpg`, `.m4v`, `.3gp`, `.ts`, `.mts` / all `video/*` MIME types |
+
 ## Adding new file types
 
-**Files with extensions** (local files, rclone mount) — add to `EXT_MAP`:
+**Files with extensions** (local files, rclone mount) — add to `EXT_MAP` in `file-type-icons.py`:
 ```python
 ".xyz": f"file://{ICON_DIR}/my-icon.png",
 ```
@@ -72,17 +75,7 @@ Find a file's MIME type:
 gio info "/path/to/file" | grep content-type
 ```
 
-Then restart Nemo.
-
-## Supported file types
-
-| Type | Extensions / MIME type |
-|------|------------------------|
-| Google Docs | `.doc`, `.docx` / `application/vnd.google-apps.document` |
-| Google Sheets | `.xls`, `.xlsx` / `application/vnd.google-apps.spreadsheet` |
-| Google Slides | `.ppt`, `.pptx` / `application/vnd.google-apps.presentation` |
-| PDF | `.pdf` / `application/pdf` |
-| Video | `.mp4`, `.mkv`, `.avi`, `.mov`, `.wmv`, `.flv`, `.webm`, `.mpeg`, `.mpg`, `.m4v`, `.3gp`, `.ts`, `.mts` / all `video/*` MIME types |
+Then restart Nemo: `nemo -q && nemo &`
 
 ## How it works
 
@@ -91,7 +84,7 @@ Nemo opens a folder
   → calls update_file_info() for each file
   → extension checks MIME type first  (catches GVFS files without extension)
   → then checks file extension        (catches rclone mount and local files)
-  → sets metadata::custom-icon = "file:///home/user/Pictures/Icons/..."
+  → sets metadata::custom-icon = "file://~/.local/share/nemo-file-type-icons/icons/..."
   → Nemo shows this icon instead of the generic one
   → on second open: value already set → nothing to do (performance)
 ```
