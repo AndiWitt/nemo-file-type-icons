@@ -8,12 +8,27 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Installing nemo-file-type-icons..."
 
-# Check that nemo-python is installed
-if ! dpkg -s nemo-python &>/dev/null; then
+# Check that Nemo Python bindings are available
+# (package is 'nemo-python' on Debian/Ubuntu/Mint, 'python-nemo' on Arch)
+if dpkg -s nemo-python &>/dev/null 2>&1; then
+    : # found via dpkg
+elif python3 -c "from gi.repository import Nemo" &>/dev/null 2>&1; then
+    : # found via GI typelib (non-Debian systems)
+else
     echo ""
-    echo "Error: nemo-python is not installed."
-    echo "Install it first with:"
-    echo "  sudo apt install nemo-python"
+    echo "Error: Nemo Python bindings not found."
+    echo "Install with:"
+    echo "  Debian/Ubuntu/Mint:  sudo apt install nemo-python"
+    echo "  Arch:                sudo pacman -S python-nemo"
+    echo ""
+    exit 1
+fi
+
+# Check that icons are present
+if ! ls "$SCRIPT_DIR"/icons/*.png &>/dev/null; then
+    echo ""
+    echo "Error: No PNG icons found in $SCRIPT_DIR/icons/"
+    echo "Please clone the full repository."
     echo ""
     exit 1
 fi

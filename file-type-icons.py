@@ -8,10 +8,18 @@ Works for:
 
 Icons are read from: ~/.local/share/nemo-file-type-icons/icons/
 Install with: bash install.sh
+
+Note: If icons stop appearing after updating this extension (e.g. icon filenames changed),
+clear the GIO metadata cache for the affected folder by restarting Nemo or running:
+  gio set -t unset '/path/to/file' metadata::custom-icon
 """
 
+import logging
 import os
+
 from gi.repository import GObject, Gio, Nemo
+
+_logger = logging.getLogger(__name__)
 
 ICON_DIR = os.path.expanduser("~/.local/share/nemo-file-type-icons/icons")
 
@@ -61,6 +69,9 @@ MIME_MAP = {
 
 class FileTypeIconProvider(GObject.GObject, Nemo.InfoProvider):
 
+    def get_name(self):
+        return "FileTypeIconProvider"
+
     def update_file_info(self, file):
         icon_uri = None
 
@@ -84,7 +95,7 @@ class FileTypeIconProvider(GObject.GObject, Nemo.InfoProvider):
         if not icon_uri:
             return Nemo.OperationResult.COMPLETE
 
-        # Already set correctly → nothing to do (performance)
+        # Already set correctly → nothing to do (no performance cost)
         if file.get_string_attribute("metadata::custom-icon") == icon_uri:
             return Nemo.OperationResult.COMPLETE
 
@@ -94,7 +105,7 @@ class FileTypeIconProvider(GObject.GObject, Nemo.InfoProvider):
             info.set_attribute_string("metadata::custom-icon", icon_uri)
             gfile.set_attributes_from_info(info, Gio.FileQueryInfoFlags.NONE, None)
             file.invalidate_extension_info()
-        except Exception:
-            pass
+        except Exception as e:
+            _logger.warning("nemo-file-type-icons: failed to set icon for %s: %s", file.get_uri(), e)
 
         return Nemo.OperationResult.COMPLETE

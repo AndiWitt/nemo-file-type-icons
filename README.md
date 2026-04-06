@@ -18,6 +18,9 @@ This extension solves both cases transparently with a single lightweight Nemo Py
   sudo apt install nemo-python
   ```
 
+> **rclone users:** Your mount must support extended attributes (the default).
+> If you use `--no-xattrs` or a read-only mount, custom icons cannot be written.
+
 ## Installation
 
 ```bash
@@ -84,7 +87,7 @@ Nemo opens a folder
   → calls update_file_info() for each file
   → extension checks MIME type first  (catches GVFS files without extension)
   → then checks file extension        (catches rclone mount and local files)
-  → sets metadata::custom-icon = "file://~/.local/share/nemo-file-type-icons/icons/..."
+  → sets metadata::custom-icon = "file:///home/username/.local/share/nemo-file-type-icons/icons/..."
   → Nemo renders the custom icon instead of the generic one
   → on subsequent opens: value already set → skipped (no performance cost)
 ```

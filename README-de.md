@@ -18,6 +18,9 @@ Diese Extension löst beide Fälle transparent mit einem einzigen schlanken Nemo
   sudo apt install nemo-python
   ```
 
+> **rclone-Nutzer:** Der Mount muss Extended Attributes unterstützen (Standard).
+> Bei `--no-xattrs` oder Read-only-Mounts können keine Icons gesetzt werden.
+
 ## Installation
 
 ```bash
@@ -85,7 +88,7 @@ Nemo öffnet einen Ordner
   → ruft update_file_info() für jede Datei auf
   → Extension prüft zuerst den MIME-Typ  (trifft GVFS-Dateien ohne Endung)
   → dann die Dateiendung als Fallback    (trifft rclone-Mount und lokale Dateien)
-  → setzt metadata::custom-icon = "file://~/.local/share/nemo-file-type-icons/icons/..."
+  → setzt metadata::custom-icon = "file:///home/nutzername/.local/share/nemo-file-type-icons/icons/..."
   → Nemo zeigt dieses Icon statt dem generischen
   → beim nächsten Öffnen: Wert bereits gesetzt → wird übersprungen (kein Performance-Aufwand)
 ```
